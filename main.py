@@ -16,8 +16,17 @@ SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
 #Velocity
 VEL = 5
+BULLET_VEL = 7
+
+#Number of bullets
+MAX_BULLETS = 3
+
 # Rect(x, y, width, height)
 BORDER = pygame.Rect(WIDTH / 2 - 5, 0, 10, HEIGHT)
+
+#bullets
+red_bullets = []
+yellow_bullets = []
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Spinning Wheel")
@@ -71,7 +80,17 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LCTRL and len(yellow_bullets) < MAX_BULLETS:
+                    bullet = pygame.Rect(yellow.x + yellow.width, yellow.y + yellow.height / 2 - 2, 10, 5)
+                    yellow_bullets.append(bullet)
+                if event.key == pygame.K_RCTRL and len(red_bullets) < MAX_BULLETS:
+                    bullet = pygame.Rect(red.x, red.y + red.height / 2 - 2, 10, 5)
+                    red_bullets.append(bullet)
         
+        print(yellow_bullets, red_bullets)
+
         key_pressed = pygame.key.get_pressed()
         yellow_handle_movement(key_pressed, yellow)        
         red_handle_movement(key_pressed, red)
