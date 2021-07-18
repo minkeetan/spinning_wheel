@@ -1,9 +1,10 @@
 import pygame
-# wrapper to OS interface
 import os
 pygame.font.init()
 
 WIDTH, HEIGHT = 900, 500
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("First Game!")
 
 # RGB in a tuple
 PURPLE = (255, 0, 255)
@@ -15,10 +16,10 @@ YELLOW = (255, 255, 0)
 HEALTH_FONT = pygame.font.SysFont('comicsans', 40)
 WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 
-# 60 frame per second
-FPS = 60
+BORDER = pygame.Rect(WIDTH//2 - 5, 0, 10, HEIGHT)
 
-SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
+#BULLET_HIT_SOUND = pygame.mixer.Sound('Assets/Grenade+1.mp3')
+#BULLET_FIRE_SOUND = pygame.mixer.Sound('Assets/Gun+Silencer.mp3')
 
 # Velocity
 VEL = 5
@@ -26,9 +27,7 @@ BULLET_VEL = 7
 
 # Number of bullets
 MAX_BULLETS = 3
-
-# Rect(x, y, width, height)
-BORDER = pygame.Rect(WIDTH / 2 - 5, 0, 10, HEIGHT)
+SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
 YELLOW_HIT = pygame.USEREVENT + 1
 RED_HIT = pygame.USEREVENT + 2
@@ -71,11 +70,11 @@ def draw_window(yellow, red, yellow_bullets, red_bullets, yellow_health, red_hea
     WIN.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
     WIN.blit(RED_SPACESHIP, (red.x, red.y))
 
-    for bullet in yellow_bullets:
-        pygame.draw.rect(WIN, YELLOW, bullet)
-
     for bullet in red_bullets:
         pygame.draw.rect(WIN, RED, bullet)
+
+    for bullet in yellow_bullets:
+        pygame.draw.rect(WIN, YELLOW, bullet)
 
     pygame.display.update()
 
@@ -106,7 +105,6 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
     for bullet in yellow_bullets:
         bullet.x += BULLET_VEL
         if red.colliderect(bullet):
-            # Post an event after hit
             pygame.event.post(pygame.event.Event(RED_HIT))
             yellow_bullets.remove(bullet)
         elif bullet.x > WIDTH:
@@ -115,7 +113,6 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
     for bullet in red_bullets:
         bullet.x -= BULLET_VEL
         if yellow.colliderect(bullet):
-            # Post an event after hit
             pygame.event.post(pygame.event.Event(YELLOW_HIT))
             red_bullets.remove(bullet)
         elif bullet.x < 0:
@@ -126,6 +123,12 @@ def main():
     red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
     yellow = pygame.Rect(100, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 
+    red_bullets = []
+    yellow_bullets = []
+
+    red_health = 10
+    yellow_health = 10
+
     clock = pygame.time.Clock()
     run = True
 
@@ -133,7 +136,6 @@ def main():
     yellow_health = 10
 
     while run:
-        # control the speed of the while loop, update 60 times per second
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -145,6 +147,8 @@ def main():
                     bullet = pygame.Rect(
                         yellow.x + yellow.width, yellow.y + yellow.height // 2 - 2, 10, 5)
                     yellow_bullets.append(bullet)
+                    #BULLET_FIRE_SOUND.play()
+
                 if event.key == pygame.K_RCTRL and len(red_bullets) < MAX_BULLETS:
                     bullet = pygame.Rect(
                         red.x, red.y + red.height // 2 - 2, 10, 5)
@@ -174,7 +178,7 @@ def main():
 
         draw_window(yellow, red, yellow_bullets, red_bullets, yellow_health, red_health)
 
-    pygame.quit()
+    main()
 
 
 # To prevent the function being called when the file is imported instead of being called directly.
