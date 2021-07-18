@@ -101,11 +101,8 @@ def main():
         if key_pressed[pygame.K_SPACE] and start_spinning == False:
             start_spinning = True
             name_list = pd.read_csv("name_list.csv")
-            # name_list = ["Alex Leo 1", "Alex Leo 2", "Alex Leo 3", "Alex Leo 4", "Alex Leo 5", "Alex Leo 6",
-            # "Alex Leo 7", "Alex Leo 8", "Alex Leo 9", "Alex Leo 10", "Alex Leo 11", "Alex Leo 12"]
             name_list = name_list[name_list["class"] == "2ST1"]["name"].to_list()
-            for x in range(random.randint(0,3)):
-                random.shuffle(name_list)
+            random.shuffle(name_list)
             print(name_list)
         elif key_pressed[pygame.K_SPACE] and start_spinning == True and time_counter == 0:
             start_spinning = False
