@@ -86,14 +86,19 @@ def main():
     clock = pygame.time.Clock()
     run = True
     start_spinning = False
+    
 
     # load_name_list
     name_list = []
-    class_list = ["2ST1", "2SK1", "2TA1", "2TB1", "2TC1"]
+    # class_list = ["2ST1", "2SK1", "2TA1", "2TB1", "2TC1"]
+    # class_list = []
     class_index = 0
     person = ""
     person_index = 0
     time_counter = 5
+
+    name_list = pd.read_csv("name_list.csv")
+    class_list = name_list["class"].unique()
 
     while run:
         # control the speed of the while loop, update 60 times per second`
@@ -107,9 +112,9 @@ def main():
             if event.type == ONE_SEC_TIMER and time_counter > 0 and start_spinning == True:
                 time_counter -= 1
             if event.type == HUNDRED_MILE_TIMER and time_counter > 0 and start_spinning == True:
-                person = name_list[person_index]
+                person = name_list_filtered[person_index]
                 person_index += 1
-                if person_index >= len(name_list):
+                if person_index >= len(name_list_filtered):
                     person_index = 0
             
             if event.type == pygame.KEYDOWN:
@@ -124,11 +129,9 @@ def main():
             start_spinning = True
             time_counter = 5
             person_index = 0
-            name_list = pd.read_csv("name_list.csv")
-            name_list = name_list[name_list["class"] == class_selected]["name"].to_list()
-            random.shuffle(name_list)
-            print(name_list)
-        
+            name_list_filtered = name_list[name_list["class"] == class_selected]["name"].to_list()
+            random.shuffle(name_list_filtered)
+            print(name_list_filtered)
         # if len(name_list) > time_counter:
         #     person = name_list[time_counter]
         if time_counter == 0:
